@@ -70,6 +70,12 @@ window.onload = function () {
 }
 
 function loadGame() {
+    if (pipeInterval != null) {
+        clearInterval(pipeInterval);
+        pipeInterval = null;
+    }
+    gameOver = false;
+    pipes = [];
     swooshSound.play();
     document.getElementById('main-menu').style.display = 'none';
     isGameStarted = false;
@@ -89,7 +95,7 @@ function startGame() {
         isGameStarted = true;
         velocityY = -6;
         flapSound.play();
-        pipeInterval = setInterval(addPipes, 1500);
+        pipeInterval = setInterval(addPipes, 2500);
 
         messageImg.style.display = 'none';  // Hide the message after the game starts
     }
@@ -159,19 +165,24 @@ function isCollision(bird, pipe) {
 function endGame() {
     gameOver = true;
     clearInterval(pipeInterval);
+    pipeInterval = null;
     deathSound.play();
     document.getElementById('gameover-menu').style.display = 'flex';
     document.getElementById('final-score').textContent = Math.floor(score);
 }
 
 function restartGame() {
+    if (pipeInterval != null) {
+        clearInterval(pipeInterval);
+        pipeInterval = null;
+    }
     gameOver = false;
     pipes = [];
     velocityY = 0;
     score = 0;
     bird.y = birdY;
     document.getElementById('gameover-menu').style.display = 'none';
-    
+
     messageImg.style.display = 'block';  // Show the message when restarting the game
 
     loadGame();
