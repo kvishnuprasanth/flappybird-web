@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flappy Bird</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    <script src="https://unpkg.com/wavesurfer.js@7/dist/wavesurfer.min.js"></script>
     <script src="game.js" defer></script>
+    <script src="audio-edit.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script src="edit.js" defer></script>
 </head>
 <body>
     <canvas id="board"></canvas>
@@ -13,12 +18,61 @@
     <div id="main-menu">
         <img id="logo-image" src="./assets/images/logo.png" alt="Flappy Bird" />
         <img id="start-button" src="./assets/images/start.png" alt="Start Game" style="cursor: pointer;" />
+        <button type="button" id="edit-button" class="edit-button">Edit</button>
     </div>
+
+    <div id="edit-view" style="display: none;">
+        <header class="edit-header">
+            <h1>Edit game</h1>
+            <button type="button" id="back-to-game">Back to game</button>
+        </header>
+
+        <section class="edit-section">
+            <h2 class="edit-section-title">Audio</h2>
+            <p class="edit-hint">Max 5 seconds per sound. Pick a sound, load a file, trim, then use in game.</p>
+            <div id="sound-list" class="sound-list"></div>
+            <div id="trim-panel" class="trim-panel" style="display: none;">
+                <p id="trim-sound-label" class="trim-sound-label"></p>
+                <input type="file" id="audio-file-input" accept="audio/*" />
+                <div id="waveform-container" class="waveform-container"></div>
+                <div class="trim-ranges">
+                    <label>Start (s): <input type="number" id="trim-start-input" min="0" step="0.1" value="0" class="trim-input" /></label>
+                    <label>End (s): <input type="number" id="trim-end-input" min="0" step="0.1" value="5" class="trim-input" /></label>
+                </div>
+                <p id="trim-duration" class="trim-duration">Max 5 seconds</p>
+                <div class="trim-actions">
+                    <button type="button" id="trim-preview">Preview</button>
+                    <button type="button" id="trim-apply">Use in game</button>
+                </div>
+                <p id="trim-feedback" class="trim-feedback" style="display: none;"></p>
+            </div>
+        </section>
+
+        <section class="edit-section">
+            <h2 class="edit-section-title">Images</h2>
+            <p class="edit-hint">Click an asset to replace it with a cropped image.</p>
+            <div id="asset-grid" class="asset-grid"></div>
+        </section>
+    </div>
+
+    <div id="crop-modal" class="crop-modal" style="display: none;">
+        <div class="crop-modal-content">
+            <div class="crop-container">
+                <img id="crop-image" src="" alt="Crop" />
+            </div>
+            <div class="crop-actions">
+                <button type="button" id="crop-cancel">Cancel</button>
+                <button type="button" id="crop-confirm">Confirm</button>
+            </div>
+        </div>
+    </div>
+    <input type="file" id="asset-file-input" accept="image/*" style="display: none;" />
 
     <div id="gameover-menu" style="display: none;">
         <img id="gameover-image" src="./assets/images/gameover.png" alt="Game Over" />
         <p>Your Score: <span id="final-score">0</span></p>
         <img id="restart-button" src="./assets/images/restart.png" alt="Restart Game" style="cursor: pointer;" />
+        <button type="button" class="edit-button">Edit</button>
     </div>
 
     <img id="message-image" src="./assets/images/message.png" alt="Message" style="display: none;" />

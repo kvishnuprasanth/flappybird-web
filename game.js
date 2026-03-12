@@ -9,10 +9,30 @@ let topPipeImg, bottomPipeImg;
 
 let gravity = 0.4, velocityY = 0, velocityX = -2, isGameStarted = false, gameOver = false, score = 0;
 
-let flapSound = new Audio('./assets/sound/flap.mp3');
-let passPipeSound = new Audio('./assets/sound/pass_pipe.mp3');
-let deathSound = new Audio('./assets/sound/gameover.mp3');
-let swooshSound = new Audio('./assets/sound/swoosh.mp3');
+const SOUND_IDS = ['flap', 'pass_pipe', 'gameover', 'swoosh'];
+const SOUND_PATHS = {
+  flap: './assets/sound/flap.mp3',
+  pass_pipe: './assets/sound/pass_pipe.mp3',
+  gameover: './assets/sound/gameover.mp3',
+  swoosh: './assets/sound/swoosh.mp3',
+};
+
+let flapSound = new Audio(SOUND_PATHS.flap);
+let passPipeSound = new Audio(SOUND_PATHS.pass_pipe);
+let deathSound = new Audio(SOUND_PATHS.gameover);
+let swooshSound = new Audio(SOUND_PATHS.swoosh);
+
+const soundById = { flap: flapSound, pass_pipe: passPipeSound, gameover: deathSound, swoosh: swooshSound };
+const customSoundUrls = {};
+
+function setGameSound(id, url) {
+  if (!SOUND_IDS.includes(id) || !soundById[id]) return;
+  const prev = customSoundUrls[id];
+  if (prev && prev.startsWith('blob:')) URL.revokeObjectURL(prev);
+  customSoundUrls[id] = url;
+  soundById[id].src = url;
+}
+window.setGameSound = setGameSound;
 
 let pipeInterval, animationId;
 let messageImg;
@@ -28,11 +48,15 @@ window.onload = function () {
 
     topPipeImg = new Image();
     topPipeImg.src = "./assets/images/toppipe.png";
-    
+
     bottomPipeImg = new Image();
     bottomPipeImg.src = "./assets/images/bottompipe.png";
 
     messageImg = document.getElementById("message-image");
+
+    window.birdImg = birdImg;
+    window.topPipeImg = topPipeImg;
+    window.bottomPipeImg = bottomPipeImg;
 
     document.getElementById('start-button').addEventListener('click', loadGame);
     document.getElementById('restart-button').addEventListener('click', restartGame);
